@@ -1,0 +1,48 @@
+* .include "../50002/nominal.jsim"
+* .include "../50002/stdcell.jsim"
+* .include "../50002/lab3adder.jsim"
+
+.subckt adder32 ALUFN[0] A[31:0] B[31:0] S[31:0] Z V N
+XxorB ALUFN[0]#32 B[31:0] XB[31:0] xor2
+XfullAdder0 ALUFN[0] A[0] XB[0] S[0] C[0] FA
+XfullAdder1 C[0:30] A[1:31] XB[1:31] S[1:31] C[1:31] FA
+
+XbufferN S[31] N buffer
+
+XvOut A[31] XB[31] S[31] V adderVOut
+
+XnorZ S[0:31] Z nor32
+.ends
+
+.subckt FA cin a b s cout
+Xxor0 a b 1 xor2
+Xxor1 cin 1 s xor2
+Xnand0 a b 2 nand2
+Xnand1 b cin 3 nand2
+Xnand2 a cin 4 nand2
+Xnand3 2 3 4 cout nand3
+.ends
+
+.subckt adderVOut A[31] XB[31] S[31] V
+XinvA A[31] Ainv[31] inverter
+XinvB XB[31] XBinv[31] inverter
+XinvS S[31] Sinv[31] inverter
+XandABS0 A[31] XB[31] Sinv[31] p and3
+XandABS1 Ainv[31] XBinv[31] S[31] q and3
+XorV p q V or2
+.ends
+
+.subckt nor32 in[0:31] out
+Xnor00 in[3:0] res00 nor4
+Xnor01 in[7:4] res01 nor4
+Xnor02 in[11:8] res02 nor4
+Xnor03 in[15:12] res03 nor4
+Xnor10 in[19:16] res10 nor4
+Xnor11 in[23:20] res11 nor4
+Xnor12 in[27:24] res12 nor4
+Xnor13 in[31:28] res13 nor4
+
+XandRes0 res00 res01 res02 res03 M and4
+XandRes1 res10 res11 res12 res13 N and4
+XandOut M N out and2
+.ends

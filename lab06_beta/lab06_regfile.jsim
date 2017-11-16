@@ -1,0 +1,30 @@
+* .include "../50002/nominal.jsim"
+* .include "../50002/stdcell.jsim"
+* .include "../50002/lab6regfile.jsim"
+
+.subckt regfile clk werf ra2sel wasel ra[4:0] rb[4:0] rc[4:0]
++ wdata[31:0] radata[31:0] rbdata[31:0]
+
+* WASEL, RA2SEL
+Xxpreg vdd#4 0 xp[4:0] knex
+XwaselMux wasel#5 rc[4:0] xp[4:0] wamux[4:0] mux2
+Xra2selMux ra2sel#5 rb[4:0] rc[4:0] ra2mux[4:0] mux2
+
+* check if R31
+Xcheck0 ra[4:0] b0 check31
+Xcheck1 ra2mux[4:0] b1 check31
+Xmux0 b0#32 adata[31:0] 0#32 radata[31:0] mux2
+Xmux1 b1#32 bdata[31:0] 0#32 rbdata[31:0] mux2
+
+* REGFILE INIT
+Xregfile 
++ vdd 0 0 ra[4:0] adata[31:0]
++ vdd 0 0 ra2mux[4:0] bdata[31:0]
++ 0 clk werf wamux[4:0] wdata[31:0]
++ $memory width=32 nlocations=31
+.ends
+
+.subckt check31 ra[4:0] bool
+Xand4 ra[4:1] temp and4
+Xand2 ra[0] temp bool and2
+.ends

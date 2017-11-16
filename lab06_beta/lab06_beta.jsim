@@ -1,0 +1,55 @@
+.include "../50002/nominal.jsim"
+.include "../50002/stdcell.jsim"
+.include "../50002/lab6checkoff.jsim"
+.include "lab06_pc.jsim"
+.include "lab06_regfile.jsim"
+.include "lab06_ctl.jsim"
+.include "lab03_alu.jsim"
+
+.subckt beta clk reset irq ia[31:0] id[31:0] ma[31:0]
++ moe mrd[31:0] wr mwd[31:0] 
+
+* JT and MWD buffer
+XjtBuffer radata[31:0] jt[31:0] knex
+XmwdBuffer rbdata[31:0] mwd[31:0] knex
+
+* WDSEL (PC + 4, MRD, ALUOUT)
+XwdselMux wdsel[1]#32 wdsel[0]#32 iaplus4[31:0] 
++ mrd[31:0] aluout[31:0] 0#32 wdata[31:0] mux4
+
+* ASEL, BSEL into ALU
+XaselMux asel#32 radata[31:0] 0 iaplus4plusC[30:0] aselout[31:0] mux2
+XbselMux bsel#32 rbdata[31:0] id[15]#16 id[15:0] bselout[31:0] mux2
+Xalu alufn[5:0] aselout[31:0] bselout[31:0] aluout[31:0] aluZ aluV aluN alu
+
+* connect ALU output to MA
+Xaluma aluout[31:0] ma[31:0] knex
+
+* XADR, ILLOP
+Xxadr vdd 0#27 vdd 0#3 xadr[31:0] knex
+Xillop vdd 0#28 vdd 0#2 illop[31:0] knex
+
+* Z is 1 iff radata is 0
+Xz radata[31:0] z nor32
+
+* PC, CTL and REGFILE
+Xpc clk reset pcsel[2:0] xadr[31:0] illop[31:0] jt[31:0] id[15:0] 
++ ia[31:0] iaplus4[31:0] iaplus4plusC[31:0] pc
+Xctl reset z irq id[31:26] xpcsel[2:0] xwasel asel
++ ra2sel bsel alufn[5:0] xwdsel[1:0] xwerf moe xwr ctl
+Xregfile clk werf ra2sel wasel id[20:16] id[15:11] id[25:21]
++ wdata[31:0] radata[31:0] rbdata[31:0] regfile
+
+* interrupt
+Xusermode ia[31] usermode inverter
+Xand0 irq usermode res and2
+Xpcsel res#3 xpcsel[2:0] vdd 0#2 pcsel[2:0] mux2
+xwasel res xwasel vdd wasel mux2
+Xwerf res xwerf vdd werf mux2
+Xwdsel res#2 xwdsel[1:0] 0#2 wdsel[1:0] mux2
+Xwr res xwr 0 wr mux2
+.ends
+
+.subckt knex a b
+.connect a b
+.ends

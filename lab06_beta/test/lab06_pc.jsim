@@ -1,0 +1,25 @@
+* .include "../../50002/nominal.jsim"
+* .include "../../50002/stdcell.jsim"
+* .include "../../50002/lab6pc.jsim"
+
+.subckt pc clk reset ia[31:0]
+Xplus4 ia[31:0] oa[31:0] plus4
+XresetMux reset#32 oa[31:0] 0#32 ipc[31:0] mux2
+Xreg ipc[31:0] clk#32 ia[31:0] dreg
+.ends
+
+.subckt plus4 a[31:0] s[31:0]
+Xone one constant1
+Xbuffer a[1:0] s[1:0] buffer
+Xfa0 0 a[2] one s[2] c[2] fulladder
+Xfa1 c[2:30] a[3:31] 0#29 s[3:31] c[3:31] fulladder
+.ends
+
+.subckt fulladder cin a b s cout
+Xxor0 a b 1 xor2
+Xxor1 cin 1 s xor2
+Xnand0 a b 2 nand2
+Xnand1 b cin 3 nand2
+Xnand2 a cin 4 nand2
+Xnand3 2 3 4 cout nand3
+.ends

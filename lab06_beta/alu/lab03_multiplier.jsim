@@ -1,0 +1,74 @@
+* .include "lab03adder.jsim"
+* .include "lab03compare.jsim"
+* .include "lab03boolean.jsim"
+* .include "lab03shifter.jsim"
+* .include "../../jsim/provided/nominal.jsim"
+* .include "../../jsim/provided/stdcell.jsim"
+* .include "../../jsim/provided/lab3multiply.jsim"
+
+.subckt mult32 A[31:0] B[31:0] mult[31:0] 
+XbitMult_A1 A[0:31] B[0]#32 mult_A1[0:31] and2 
+XbitMult_A2 A[0:31] B[1]#32 mult_A2[0:31] and2
+XbitMult_A3 A[0:31] B[2]#32 mult_A3[0:31] and2
+XbitMult_A4 A[0:31] B[3]#32 mult_A4[0:31] and2
+XbitMult_B1 A[0:31] B[4]#32 mult_B1[0:31] and2
+XbitMult_B2 A[0:31] B[5]#32 mult_B2[0:31] and2
+XbitMult_B3 A[0:31] B[6]#32 mult_B3[0:31] and2
+XbitMult_B4 A[0:31] B[7]#32 mult_B4[0:31] and2
+XbitMult_C1 A[0:31] B[8]#32 mult_C1[0:31] and2
+XbitMult_C2 A[0:31] B[9]#32 mult_C2[0:31] and2
+XbitMult_C3 A[0:31] B[10]#32 mult_C3[0:31] and2
+XbitMult_C4 A[0:31] B[11]#32 mult_C4[0:31] and2
+XbitMult_D1 A[0:31] B[12]#32 mult_D1[0:31] and2
+XbitMult_D2 A[0:31] B[13]#32 mult_D2[0:31] and2
+XbitMult_D3 A[0:31] B[14]#32 mult_D3[0:31] and2
+XbitMult_D4 A[0:31] B[15]#32 mult_D4[0:31] and2
+XbitMult_E1 A[0:31] B[16]#32 mult_E1[0:31] and2
+XbitMult_E2 A[0:31] B[17]#32 mult_E2[0:31] and2
+XbitMult_E3 A[0:31] B[18]#32 mult_E3[0:31] and2
+XbitMult_E4 A[0:31] B[19]#32 mult_E4[0:31] and2
+XbitMult_F1 A[0:31] B[20]#32 mult_F1[0:31] and2
+XbitMult_F2 A[0:31] B[21]#32 mult_F2[0:31] and2
+XbitMult_F3 A[0:31] B[22]#32 mult_F3[0:31] and2
+XbitMult_F4 A[0:31] B[23]#32 mult_F4[0:31] and2
+XbitMult_G1 A[0:31] B[24]#32 mult_G1[0:31] and2
+XbitMult_G2 A[0:31] B[25]#32 mult_G2[0:31] and2
+XbitMult_G3 A[0:31] B[26]#32 mult_G3[0:31] and2
+XbitMult_G4 A[0:31] B[27]#32 mult_G4[0:31] and2
+XbitMult_H1 A[0:31] B[28]#32 mult_H1[0:31] and2
+XbitMult_H2 A[0:31] B[29]#32 mult_H2[0:31] and2
+XbitMult_H3 A[0:31] B[30]#32 mult_H3[0:31] and2
+XbitMult_H4 A[0:31] B[31]#32 mult_H4[0:31] and2
+                        
+XaddMult_A1 0 mult_A1[31:0] mult_A2[30:0] 0 PA1[31:0] ZA1 VA1 NA1 adder32 
+XaddMult_A2 0 PA1[31:0] mult_A3[29:0] 0#2 PA2[31:0] ZA2 VA2 NA2 adder32 
+XaddMult_A3 0 PA2[31:0] mult_A4[28:0] 0#3 PA3[31:0] ZA3 VA3 NA3 adder32 
+XaddMult_A4 0 PA3[31:0] mult_B1[27:0] 0#4 PA4[31:0] ZA4 VA4 NA4 adder32 
+XaddMult_B1 0 PA4[31:0] mult_B2[26:0] 0#5 PB1[31:0] ZB1 VB1 NB1 adder32 
+XaddMult_B2 0 PB1[31:0] mult_B3[25:0] 0#6 PB2[31:0] ZB2 VB2 NB2 adder32 
+XaddMult_B3 0 PB2[31:0] mult_B4[24:0] 0#7 PB3[31:0] ZB3 VB3 NB3 adder32 
+XaddMult_B4 0 PB3[31:0] mult_C1[23:0] 0#8 PB4[31:0] ZB4 VB4 NB4 adder32 
+XaddMult_C1 0 PB4[31:0] mult_C2[22:0] 0#9 PC1[31:0] ZC1 VC1 NC1 adder32
+XaddMult_C2 0 PC1[31:0] mult_C3[21:0] 0#10 PC2[31:0] ZC2 VC2 NC2 adder32
+XaddMult_C3 0 PC2[31:0] mult_C4[20:0] 0#11 PC3[31:0] ZC3 VC3 NC3 adder32 
+XaddMult_C4 0 PC3[31:0] mult_D1[19:0] 0#12 PC4[31:0] ZC4 VC4 NC4 adder32 
+XaddMult_D1 0 PC4[31:0] mult_D2[18:0] 0#13 PD1[31:0] ZD1 VD1 ND1 adder32 
+XaddMult_D2 0 PD1[31:0] mult_D3[17:0] 0#14 PD2[31:0] ZD2 VD2 ND2 adder32 
+XaddMult_D3 0 PD2[31:0] mult_D4[16:0] 0#15 PD3[31:0] ZD3 VD3 ND3 adder32 
+XaddMult_D4 0 PD3[31:0] mult_E1[15:0] 0#16 PD4[31:0] ZD4 VD4 ND4 adder32
+XaddMult_E1 0 PD4[31:0] mult_E2[14:0] 0#17 PE1[31:0] ZE1 VE1 NE1 adder32 
+XaddMult_E2 0 PE1[31:0] mult_E3[13:0] 0#18 PE2[31:0] ZE2 VE2 NE2 adder32 
+XaddMult_E3 0 PE2[31:0] mult_E4[12:0] 0#19 PE3[31:0] ZE3 VE3 NE3 adder32 
+XaddMult_E4 0 PE3[31:0] mult_F1[11:0] 0#20 PE4[31:0] ZE4 VE4 NE4 adder32 
+XaddMult_F1 0 PE4[31:0] mult_F2[10:0] 0#21 PF1[31:0] ZF1 VF1 NF1 adder32 
+XaddMult_F2 0 PF1[31:0] mult_F3[9:0] 0#22 PF2[31:0] ZF2 VF2 NF2 adder32 
+XaddMult_F3 0 PF2[31:0] mult_F4[8:0] 0#23 PF3[31:0] ZF3 VF3 NF3 adder32 
+XaddMult_F4 0 PF3[31:0] mult_G1[7:0] 0#24 PF4[31:0] ZF4 VF4 NF4 adder32 
+XaddMult_G1 0 PF4[31:0] mult_G2[6:0] 0#25 PG1[31:0] ZG1 VG1 NG1 adder32 
+XaddMult_G2 0 PG1[31:0] mult_G3[5:0] 0#26 PG2[31:0] ZG2 VG2 NG2 adder32 
+XaddMult_G3 0 PG2[31:0] mult_G4[4:0] 0#27 PG3[31:0] ZG3 VG3 NG3 adder32 
+XaddMult_G4 0 PG3[31:0] mult_H1[3:0] 0#28 PG4[31:0] ZG4 VG4 NG4 adder32 
+XaddMult_H1 0 PG4[31:0] mult_H2[2:0] 0#29 PH1[31:0] ZH1 VH1 NH1 adder32 
+XaddMult_H2 0 PH1[31:0] mult_H3[1:0] 0#30 PH2[31:0] ZH2 VH2 NH2 adder32 
+XaddMult_H3 0 PH2[31:0] mult_H4[0] 0#31 mult[31:0] Z V N adder32
+.ends

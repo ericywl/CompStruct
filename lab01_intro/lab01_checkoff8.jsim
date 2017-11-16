@@ -1,0 +1,17 @@
+.include "../50002/nominal.jsim"
+.include "../50002/lab1checkoff.jsim"
+
+.subckt inv a z
+MPD1 z a 0 0 NENH sw=8 sl=1
+MPU1 z a vdd vdd PENH sw=8 sl=1
+.ends
+
+.subckt F a b c z
+MPD1 3 a 2 0 NENH sw=8 sl=1
+MPD2 2 b 0 0 NENH sw=8 sl=1
+MPD3 3 c 0 0 NENH sw=8 sl=1
+MPU1 1 a vdd vdd PENH sw=8 sl=1
+MPU2 1 b vdd vdd PENH sw=8 sl=1
+MPU3 3 c 1 vdd PENH sw=8 sl=1
+Xinv 3 z inv
+.ends

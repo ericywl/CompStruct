@@ -1,0 +1,125 @@
+| include instruction macros and test jig
+.include ../50002/beta.uasm
+.include ../50002/lab5checkoff.uasm
+
+count_bull_cows:
+	PUSH(LP)
+	PUSH(BP)
+	MOVE(SP, BP)
+
+start:
+	PUSH(R2)	| btemp
+	PUSH(R3)	| bulls
+	PUSH(R4)	| cows
+	PUSH(R5)	| i
+	PUSH(R6)	| j
+	PUSH(R7)	| atry
+	PUSH(R8)	| btry
+	PUSH(R9)	| mask
+	PUSH(R10)
+	PUSH(R11)
+	PUSH(R12)
+	PUSH(R13)	| aarg
+	PUSH(R14)	| barg
+
+
+init1:
+	.breakpoint
+	LD(BP, -12, R13)	| load arg a to R13
+	LD(BP, -16, R14)	| load arg b to R14
+	CMOVE(0x0, R3)		| bulls = 0
+	CMOVE(0xF, R9)		| mask = 0xF
+	CMOVE(0x0, R5)		| i = 0
+	BR(endforbulls)		| jump to endforbulls
+
+forbulls:
+	ADDC(R5, 0x1, R5)	| i += 1
+	
+startifbulls:
+	AND(R13, R9, R10)	| a & mask to R10
+	AND(R14, R9, R11)	| b & mask to R11
+	CMPEQ(R10, R11, R12)	| (a & mask) == (b & mask) to R12
+	BEQ(R12, endifbulls)	| branch to endifbulls if R12 == 0
+
+ifbulls:	
+	ADDC(R3, 0x1, R3)	| bulls += 1
+	OR(R13, R9, R13)	| a = a | mask
+	OR(R14, R9, R14)	| b = b | mask
+
+endifbulls:
+	SHLC(R9, 0x4, R9)	| mask = mask << 4
+
+endforbulls:
+	CMPLEC(R5, 0x3, R10)	| i <= 3 to R10
+	BNE(R10, forbulls)	| branch to forbulls if R10 != 0
+
+init2:
+	CMOVE(0x0, R4)		| cows = 0
+	CMOVE(0x0, R5)		| i = 0
+	BR(endforcows1)		| branch to endforcows1
+
+forcows1:
+	ADDC(R5, 0x1, R5)	| i += 1
+	ANDC(R13, 0xF, R7)	| atry = a & 0xF
+	SHRC(R13, 0x4, R13)	| a = a >> 4
+
+startifcows1:
+	CMPEQC(R7, 0xF, R12)	| atry == 0xF to R12
+	BNE(R12, endifcows1)	| branch to endifcows1 if R12 != 0
+
+ifcows1:
+	MOVE(R14, R2)		| btemp = b
+	CMOVE(0xF, R9)		| mask = 0xF
+	CMOVE(0x0, R6)		| j = 0
+	BR(endforcows2)
+
+forcows2:
+	ADDC(R6, 0x1, R6)	| j += 1
+	ANDC(R2, 0xF, R8)	| btry = btemp & 0xF
+	SHRC(R2, 0x4, R2)	| btemp = btemp >> 4
+
+	CMPEQ(R7, R8, R11)	| atry == btry to R11
+	BEQ(R11, endifcows2)	| branch to endifcows2 if R11 == 0
+
+ifcows2:
+	ADDC(R4, 0x1, R4)	| cows += 1
+	OR(R14, R9, R14)	| b = b | mask
+	BR(endifcows1)		| branch to endifcows1
+
+endifcows2:
+	SHLC(R9, 0x4, R9)	| mask = mask << 4
+
+endforcows2:
+	CMPLEC(R6, 0x3, R10)	| j <= 3 to R10
+	BNE(R10, forcows2)	| branch to forcows2 if R10 != 0
+
+endifcows1:
+endforcows1:
+	CMPLEC(R5, 0x3, R11)	| i <= 3 to R11
+	BNE(R11, forcows1)	| branch to forcows1 if R11 != 0
+
+	SHLC(R3, 0x4, R12)	| bulls << 4 to R12
+	ADD(R12, R4, R0)	| (bulls << 4) + cows to R0
+
+end:
+	POP(R14)
+	POP(R13)
+	POP(R12)
+	POP(R11)
+	POP(R10)
+	POP(R9)
+	POP(R8)
+	POP(R7)
+	POP(R6)
+	POP(R5)
+	POP(R4)
+	POP(R3)
+	POP(R2)
+
+	MOVE(BP, SP)
+	POP(BP)
+	POP(LP)
+	RTN()
+
+StackBase: LONG(. + 4)
+	. = . + 0x1000

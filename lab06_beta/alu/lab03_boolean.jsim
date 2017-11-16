@@ -1,0 +1,6 @@
+* .include "lab03compare.jsim"
+* .include "../../jsim/provided/lab3boolean.jsim"
+
+.subckt boole32 ALUFN[3:0] A[31:0] B[31:0] boole[31:0]
+Xboole A[31:0] B[31:0] ALUFN[0]#32 ALUFN[1]#32 ALUFN[2]#32 ALUFN[3]#32 boole[31:0] mux4
+.ends

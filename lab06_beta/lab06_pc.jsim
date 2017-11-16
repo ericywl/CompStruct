@@ -1,0 +1,30 @@
+* .include "../50002/nominal.jsim"
+* .include "../50002/stdcell.jsim"
+* .include "../50002/lab6pc.jsim"
+
+.subckt pc clk reset pcsel[2:0] xadr[31:0] illop[31:0] jt[31:0] c[15:0] 
++ ia[31:0] iaplus4[31:0] iaplus4plusC[31:0]
+
+* PC + 4 but retains the supervisor bit
+Xfour 0#29 vdd 0#2 four[31:0] knex
+Xplus4temp ia[31:0] four[31:0] iaplus4t[31:0] plus
+Xplus4 ia[31] iaplus4t[30:0] iaplus4[31:0] knex
+
+* PC + 4 + 4 * SEXT[C]
+XplusC iaplus4[31:0] c[15]#14 c[15:0] 0#2 iaplus4plusC[31:0] plus
+
+* PCSEL MUX
+Xnewpc31 ia[31] jt[31] newpc31 and2
+XpcMux0 pcsel[1]#32 pcsel[0]#32 iaplus4[31:0] newpc31 jt[30:2] 0#2
++ ia[31] iaplus4plusC[30:0] illop[31:0] temp[31:0] mux4
+XpcMux1 pcsel[2]#32 temp[31:0] xadr[31:0] pcMuxOut[31:0] mux2
+
+* RESET and into PC
+XresetMux reset#32 pcMuxOut[31:0] vdd 0#31 ipc[31:0] mux2
+Xreg ipc[31:0] clk#32 ia[31:0] dreg
+.ends
+
+.subckt plus a[31:0] b[31:0] s[31:0]
+XfullAdder0 0 a[0] b[0] s[0] c[0] fa
+XfullAdder1 c[0:30] a[1:31] b[1:31] s[1:31] c[1:31] fa
+.ends

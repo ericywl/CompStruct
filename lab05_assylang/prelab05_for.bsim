@@ -1,0 +1,16 @@
+.include ../../jsim/provided/beta.uasm
+
+	CMOVE(5, R1)
+	CMOVE(0, R2)
+	CMOVE(0, R3)
+
+	BR(check_for)
+
+body_for:
+	ADD(R3, R2, R2)
+	ADDC(R3, 1, R3)
+
+check_for:
+	CMPLT(R3, R1, R4)
+	BNE(R4, body_for)
+

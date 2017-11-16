@@ -1,0 +1,26 @@
+* .include "lab03boolean.jsim"
+* .include "../../jsim/provided/lab3shifter.jsim"
+
+.subckt shift32 ALUFN[1:0] A[31:0] B[4:0] shift[31:0]
+Xshl B[4:0] A[31:0] shlOut[31:0] SHL
+Xshr B[4:0] A[31:0] 0 shrOut[31:0] SHR
+Xsra B[4:0] A[31:0] A[31] sraOut[31:0] SHR
+Xshift ALUFN[1]#32 ALUFN[0]#32 shlOut[31:0] A[31:0] shrOut[31:0] sraOut[31:0] shift[31:0] mux4
+.ends
+
+.subckt SHL B[4:0] A[31:0] shlOut[31:0]
+Xshl4 B[4]#32 A[31:0] A[15:0] 0#16 shl4[31:0] mux2
+Xshl3 B[3]#32 shl4[31:0] shl4[23:0] 0#8 shl3[31:0] mux2
+Xshl2 B[2]#32 shl3[31:0] shl3[27:0] 0#4 shl2[31:0] mux2
+Xshl1 B[1]#32 shl2[31:0] shl2[29:0] 0#2 shl1[31:0] mux2
+Xshl0 B[0]#32 shl1[31:0] shl1[30:0] 0 shlOut[31:0] mux2
+.ends
+
+.subckt SHR B[4:0] A[31:0] in shrOut[31:0]
+Xshr4 B[4]#32 A[31:0] in#16 A[31:16] shr4[31:0] mux2
+Xshr3 B[3]#32 shr4[31:0] in#8 shr4[31:8] shr3[31:0] mux2
+Xshr2 B[2]#32 shr3[31:0] in#4 shr3[31:4] shr2[31:0] mux2
+Xshr1 B[1]#32 shr2[31:0] in#2 shr2[31:2] shr1[31:0] mux2
+Xshr0 B[0]#32 shr1[31:0] in shr1[31:1] shrOut[31:0] mux2
+.ends
+

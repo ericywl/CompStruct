@@ -1,0 +1,52 @@
+Checkoff 1
+------------
+Vgs = 5V, Vds = 1.2V, I = 814.804uA
+channel resistance = 1.47274 kOhm
+
+effective channel sheet resistance = 1.47274 * 2 = 2.945 kOhm
+
+Checkoff 2
+------------
+Vgs = 0V, Vds = 2.5V, I = 5.146pA
+C = 0.05pF
+
+delta_t = C * (delta_V / I_off) = 0.05p * (2.5 / 5.146p) = 0.0243s
+
+Checkoff 3
+------------
+PFET SW = 10
+intersect at 1.66V
+
+Checkoff 4
+------------
+V_OH = 3.0V
+V_IH = 1.8824V
+V_IL = 1.4588V
+V_OL = 0.3V
+
+noise immunity = min(V_OH - V_IH, V_IL - V_OL) = 1.1176V
+
+Checkoff 5
+------------
+t_C-FALL = 5.11268ns - 5.08232ns = 0.03036ns
+t_C-RISE = 9.98852ns - 9.95802ms = 0.0305ns
+t_C = min(t_C-RISE, t_C-FALL) = 0.03036ns
+
+t_P-FALL = 5.182ns - 5.12654ns = 0.05546ns
+t_P-RISE = 10.081ns - 9.9849ns = 0.0962ns
+t_P = max(t_P-RISE, t_P-FALL) = 0.0962ns
+
+Checkoff 6
+------------
+t_C-FALL = 5.1222ns - 5.0859ns = 0.0363ns
+t_C-RISE = 9.99716ns - 9.9608ms = 0.03636ns
+t_C = min(t_C-RISE, t_C-FALL) = 0.0363ns
+
+t_P-FALL = 5.21622ns - 5.14212ns = 0.0741ns
+t_P-RISE = 10.1188ns - 9.992ns = 0.1268ns
+t_P = max(t_P-RISE, t_P-FALL) = 0.1268ns
+
+Checkoff 7
+------------
+t_C = 25
+t_P = 100

@@ -1,0 +1,17 @@
+.include ../../jsim/provided/beta.uasm
+
+	CMOVE(0x2, R1)
+	CMOVE(0x4, R2)
+	CMOVE(0x0, R3)
+
+	CMPLT(R1, R2, R0)
+	BEQ(R0, if_true)
+	MOVE(R2, R3)
+	BR(end_if)
+
+if_true:
+	MOVE(R1, R3)
+
+end_if:
+	ADDC(R3, 1, R3)
+

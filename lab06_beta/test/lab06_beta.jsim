@@ -1,0 +1,23 @@
+.include "../../50002/nominal.jsim"
+.include "../../50002/stdcell.jsim"
+.include "../../50002/lab6basicblock.jsim"
+.include "lab06_pc.jsim"
+.include "lab06_regfile.jsim"
+.include "lab06_ctl.jsim"
+.include "lab03_alu.jsim"
+
+.subckt beta clk reset ia[31:0] id[31:0] ma[31:0]
++ moe mrd[31:0] wr mwd[31:0]
+
+Xpc clk reset ia[31:0] pc
+Xctl reset id[31:26] 
++ ra2sel bsel alufn[5:0] wdsel[1:0] werf moe wr ctl
+Xregfile clk werf ra2sel id[20:16] id[15:11] id[25:21]
++ wdata[31:0] radata[31:0] rbdata[31:0] regfile
+
+XmwdBuffer rbdata[31:0] mwd[31:0] buffer
+XbselMux bsel#32 rbdata[31:0] id[15]#16 id[15:0] alubin[31:0] mux2
+
+Xalu alufn[5:0] radata[31:0] alubin[31:0] ma[31:0] z v n alu
+XwdselMux wdsel[1]#32 wdsel[0]#32 0#32 mrd[31:0] ma[31:0] 0#32 wdata[31:0] mux4
+.ends

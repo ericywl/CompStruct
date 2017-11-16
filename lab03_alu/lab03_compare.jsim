@@ -1,0 +1,9 @@
+* .include "lab03adder.jsim"
+* .include "../50002/lab3compare.jsim"
+
+.subckt compare32 ALUFN[2:1] Z V N cmp[31:0]
+Xground cmp[31:1] constant0
+Xlt N V ltOut xor2
+Xlteq Z ltOut lteqOut or2
+XcompareMux ALUFN[2] ALUFN[1] 0 ltOut Z lteqOut cmp[0] mux4
+.ends

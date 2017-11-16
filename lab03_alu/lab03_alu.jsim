@@ -1,0 +1,24 @@
+.include "lab03_adder.jsim"
+.include "lab03_compare.jsim"
+.include "lab03_boolean.jsim"
+.include "lab03_shifter.jsim"
+.include "lab03_multiplier.jsim"
+* .include "../50002/nominal.jsim"
+* .include "../50002/stdcell.jsim"
+* .include "../50002/lab3checkoff_10.jsim"
+
+.subckt alu alufn[5:0] a[31:0] b[31:0] alu[31:0] z v n
+XaddOrMult alufn[1:0] a[31:0] b[31:0] addOrMult[31:0] z v n addOrMult32
+Xshift alufn[1:0] a[31:0] b[4:0] shift[31:0] shift32
+Xboole alufn[3:0] a[31:0] b[31:0] boole[31:0] boole32
+Xcmp alufn[2:1] z v n cmp[31:0] compare32
+
+Xalu alufn[5]#32 alufn[4]#32 addOrMult[31:0] shift[31:0] boole[31:0] cmp[31:0] alu[31:0] mux4
+.ends
+
+.subckt addOrMult32 alufn[1:0] a[31:0] b[31:0] addOrMult[31:0] z v n
+Xadd alufn[0] a[31:0] b[31:0] add[31:0] z v n adder32
+Xmult a[31:0] b[31:0] mult[31:0] mult32
+XaddORMult alufn[1]#32 add[31:0] mult[31:0] addOrMult[31:0] mux2
+.ends
+
