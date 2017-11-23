@@ -1,0 +1,117 @@
+.include ../50002/beta.uasm 
+.include ../50002/lab7checkoff.uasm
+.include ../50002/lab7macros.uasm
+
+regs:   RESERVE(32)
+
+UI:
+    save_all_regs(regs)
+
+    LD(XP, -4, R0)                  | load word
+    extract_field(R0, 31, 26, R1)   | extract OPCODE
+    CMPEQC(R1, 0x10, R2)            | OPCODE == 0b010000
+    BNE(R2, LDB)                    | branch to LDB if equals
+    CMPEQC(R1, 0x11, R2)            | OPCIDE == 0b010001
+    BNE(R2, STB)                    | branch to STD if equals
+
+    LD(R31, regs, R0)
+    LD(R31, regs + 4, R1)
+    LD(R31, regs + 8, R2)
+    BR(_IllegalInstruction)
+
+LDBendif:
+    ST(R7, regs, R10)
+    restore_all_regs(regs)
+    JMP(XP)
+
+LDB:
+    extract_field(R0, 25, 21, R10)  | extract Rc
+    MULC(R10, 4, R10)               | byte offset
+    LD(R10, regs, R3)               | Reg[Rc]
+    extract_field(R0, 20, 16, R11)  | extract Ra
+    MULC(R11, 4, R11)               | byte offset
+    LD(R11, regs , R4)              | Reg[Ra]
+    extract_field(R0, 15, 0, R12)   | extract literal
+    SHLC(R12, 16, R12)
+    SRAC(R12, 16, R12)              | SEXT(literal)
+    ADD(R4, R12, R9)                | EA = Reg[Ra] + SEXT(literal)
+    LD(R9, 0, R8)                   | MDATA = Mem[EA]
+
+    extract_field(R11, 1, 0, R13)   | 2 LSB of EA
+    CMPEQC(R13, 0, R14)             | EA[1:0] == 0
+    BNE(R14, LDBif0)                | branch to LDBif0 if equals
+    CMPEQC(R13, 1, R14)             | EA[1:0] == 1
+    BNE(R14, LDBif1)                | branch to LDBif1 if equals
+    CMPEQC(R13, 2, R14)             | EA[1:0] == 2
+    BNE(R14, LDBif2)                | branch to LDBif2 if equals
+    CMPEQC(R13, 3, R14)             | EA[1:0] == 3
+    BNE(R14, LDBif3)                | branch to LDBif3 if equals
+
+LDBif0:
+    extract_field(R8, 7, 0, R7)     | MDATA[7:0]
+    BR(LDBendif)
+
+LDBif1:
+    extract_field(R8, 15, 8, R7)    | MDATA[15:8]
+    BR(LDBendif)
+
+LDBif2:
+    extract_field(R8, 23, 16, R7)   | MDATA[23:16]
+    BR(LDBendif)
+
+LDBif3:
+    extract_field(R8, 31, 24, R7)   | MDATA[31:24]
+    BR(LDBendif)
+
+
+STBendif:
+    ST(R1, 0, R9)
+    restore_all_regs(regs)
+    JMP(XP)
+
+STB:
+    extract_field(R0, 25, 21, R10)  | extract Rc
+    MULC(R10, 4, R10)               | byte offset
+    LD(R10, regs, R3)               | Reg[Rc]
+    extract_field(R0, 20, 16, R11)  | extract Ra
+    MULC(R11, 4, R11)               | byte offset
+    LD(R11, regs, R4)               | Reg[Ra]
+    extract_field(R0, 15, 0, R12)   | extract literal
+    SHLC(R12, 16, R12)
+    SRAC(R12, 16, R12)              | SEXT(literal)
+    ADD(R4, R12, R9)                | EA = Reg[Ra] + SEXT(literal)
+    LD(R9, 0, R8)                   | MDATA = Mem[EA]
+
+    extract_field(R11, 1, 0, R13)   | 2 LSB of EA
+    extract_field(R3, 7, 0, R1)     | Reg[Rc][7:0]
+    CMPEQC(R13, 0, R14)             | EA[1:0] == 0
+    BNE(R14, STBif0)                | branch to STBif0 if equals
+    CMPEQC(R13, 1, R14)             | EA[1:0] == 1
+    BNE(R14, STBif1)                | branch to STBif1 if equals
+    CMPEQC(R13, 2, R14)             | EA[1:0] == 2
+    BNE(R14, STBif2)                | branch to STBif2 if equals
+    CMPEQC(R13, 3, R14)             | EA[1:0] == 3
+    BNE(R14, STBif3)                | branch to STBif3 if equals
+
+STBif0:
+    ANDC(R8, 0x11111100, R2)
+    ADD(R1, R2, R1)                 | MDATA[7:0] = Reg[Rc][7:0]
+    BR(STBendif)
+
+STBif1:
+    ANDC(R8, 0x11110011, R2)
+    SHLC(R1, 8, R1)
+    ADD(R1, R2, R1)                 | MDATA[15:8] = Reg[Rc][7:0]
+    BR(STBendif)
+
+STBif2:
+    ANDC(R8, 0x11001111, R2)
+    SHLC(R1, 16, R1)
+    ADD(R1, R2, R1)                 | MDATA[23:16] = Reg[Rc][7:0]
+    BR(STBendif)
+
+STBif3:
+    ANDC(R8, 0x00111111, R2)
+    SHLC(R1, 24, R1)
+    ADD(R1, R2, R1)                 | MDATA[31:24] = Reg[Rc][7:0]
+    BR(STBendif)
