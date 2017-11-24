@@ -2,7 +2,7 @@
 Lab files for CompStruct
 
 Lab | Description | Type
-----|-------------------------------------------------
+----|-------------|----------------------------------
 1   | Introduction to labs  | JSim
 2   | Full Adder and 4-bit Adder  | Jsim
 3   | Arithmetic Logic Unit | Jsim
