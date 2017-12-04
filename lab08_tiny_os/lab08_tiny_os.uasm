@@ -244,13 +244,13 @@ I_Mouse:	ENTER_INTERRUPT()
 	LD(UserMState, r0)
 	JMP(xp)
 
-WrChH:	LD(UserMState,r0)		| The user's <R0>
-	WRCHAR()			| Write out the character,
-	BR(I_Rtn)			| then return
+WrChH:	LD(UserMState,r0)			| The user's <R0>
+	WRCHAR()						| Write out the character,
+	BR(I_Rtn)						| then return
 
 WrMsgH:	LD(UserMState+(4*30), r0)	| Fetch interrupted XP, then
-	CALL(KMsgAux)			| print text following SVC.
-	ST(r0,UserMState+(4*30))	| Store updated XP.
+	CALL(KMsgAux)					| print text following SVC.
+	ST(r0,UserMState+(4*30))		| Store updated XP.
 	BR(I_Rtn)
 
 ||| Handler for HexPrt(): print hex value from R0
@@ -776,8 +776,6 @@ MouseClickReport: semaphore(0)
 P3Start:
 	Wait(MouseClickReport)
 	Mouse()
-	
-	LD(UserMState, r0)
 	MOVE(r0, r1)
 
 	WrMsg()
