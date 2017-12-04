@@ -582,7 +582,18 @@ P0Read:	Wait(Prompt)		| Wait until P1 has caught up...
 	 WrMsg()		|  the remainder.
 	.text "> "
 
+CheckMouseBuffer:
+	LD(Mouse_State r0)
+	ADDC(r0, 1, r0)
+	BEQ(r0, CheckKeyBuffer)
+
 	Signal(MouseClickReport)
+	Yield()
+	BR(P0Read)
+
+CheckKeyBuffer:
+	LD(Key_State, r0)
+	BEQ(r0, CheckMouseBuffer)
 
 	LD(P0LinP, r3)		| ...then read a line into buffer...
 
@@ -763,8 +774,9 @@ P2Stack: STORAGE(256)
 MouseClickReport: semaphore(0)
 
 P3Start:
-	Mouse()
 	Wait(MouseClickReport)
+	Mouse()
+	
 	LD(UserMState, r0)
 	MOVE(r0, r1)
 
@@ -772,7 +784,6 @@ P3Start:
 	.text "\nClick at "
 
 	SHRC(r0, 16, r0)	| get X
-	ST(r0, UserMState)
 
 	WrMsg()
 	.text "x="
@@ -780,7 +791,6 @@ P3Start:
 
 	SHLC(r1, 16, r1)
 	SHRC(r1, 16, r0)	| get Y
-	ST(r0, UserMState)
 
 	WrMsg()
 	.text ", y="
@@ -789,7 +799,7 @@ P3Start:
 	WrMsg()
 	.text "\n"
 
-	Signal(MouseClickReport)
+	Signal(Prompt)
 	BR(P3Start)
 
 P3Stack:
