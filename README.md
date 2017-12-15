@@ -10,5 +10,5 @@ Lab | Description | Type
 5   | Beta Assembly Language  | BSim
 6   | Building the Beta | Jsim
 7   | Trap Handler for LDB and STB  | BSim
-
+8   | Tiny OS Process Scheduler  | BSim
 
